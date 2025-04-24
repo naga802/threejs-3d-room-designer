@@ -21720,7 +21720,7 @@
 					{
 						name: "BC-MB",
 						image: "/blueprint3D-assets/models/thumbnails/br-bml.jpg",
-						model: "/blueprint3D-assets/models/glb/final_fixed.glb",
+						model: "/blueprint3D-assets/models/glb/test.glb",
 						type: "1",
 						stackontop: !0,
 						morph: [
