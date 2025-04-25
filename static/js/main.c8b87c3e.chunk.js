@@ -4688,6 +4688,15 @@
 												a.scene.traverse((function (e)
 												{
 													if (e.isMesh)
+													{
+						
+														const polycount = e.geometry.attributes.position.count;
+														if (polycount > 200000)
+														{
+															console.warn("⚠️ Model too heavy: " + polycount + " vertices");
+															
+														}
+										
 														if (e.name.includes("morph-") || m.push(e), e.name.includes("morph-height"))
 														{
 															var t = e.name.replace("-morph-height", ""),
@@ -4697,26 +4706,27 @@
 																return a.push(e)
 															})), b[t] = a
 														}
-													else if (e.name.includes("morph-width"))
-													{
-														var l = e.name.replace("-morph-width", ""),
-															n = [];
-														e.geometry.attributes.uv.array.forEach((function (e)
+														else if (e.name.includes("morph-width"))
 														{
-															return n.push(e)
-														})), r[l] = n
-													}
-													else if (e.name.includes("morph-depth"))
-													{
-														var i = e.name.replace("-morph-depth", ""),
-															s = [];
-														e.geometry.attributes.uv.array.forEach((function (e)
+															var l = e.name.replace("-morph-width", ""),
+																n = [];
+															e.geometry.attributes.uv.array.forEach((function (e)
+															{
+																return n.push(e)
+															})), r[l] = n
+														}
+														else if (e.name.includes("morph-depth"))
 														{
-															return s.push(e)
-														})), p[i] = s
+															var i = e.name.replace("-morph-depth", ""),
+																s = [];
+															e.geometry.attributes.uv.array.forEach((function (e)
+															{
+																return s.push(e)
+															})), p[i] = s
+														}
 													}
 												}));
-												var c = [b, r, p],
+												var c = [b, r, p]
 													h = new(nt.Factory.getClass(t))(d.model, Object(f.a)(Object(f.a)(
 													{}, l),
 													{},
