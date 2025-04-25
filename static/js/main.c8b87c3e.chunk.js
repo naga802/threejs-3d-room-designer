@@ -21757,7 +21757,7 @@
 					{
 						name: "BC-RC",
 						image: "/blueprint3D-assets/models/thumbnails/br-bml.jpg",
-						model: "/blueprint3D-assets/models/glb/BC-RC.glb",
+						model: "/blueprint3D-assets/models/glb/special\bedDouble.glb",
 						type: "1",
 						stackontop: !0,
 						morph: [
