@@ -29014,9 +29014,9 @@
 					category: "SPORTSTECH",
 					styles: [
 					{
-						name: "sPad500",
+						name: "Tread-mill",
 						image: "/blueprint3D-assets/models/thumbnails/treadmill.webp",
-						model: "/blueprint3D-assets/models/glb/spad i.glb",
+						model: "/blueprint3D-assets/models/glb/A0y3.glb",
 						type: "1",
 						morph: [
 						{
@@ -29052,7 +29052,7 @@
 					{
 						name: "sPAD500",
 						image: "/blueprint3D-assets/models/thumbnails/SPAD500.webp",
-						model: "/blueprint3D-assets/models/glb/spad o.glb",
+						model: "/blueprint3D-assets/models/glb/s2.glb",
 						type: "1",
 						morph: [
 						{
