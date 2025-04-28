@@ -3153,62 +3153,123 @@
 					var t = Object(D.a)(a);
 
 					function a(e, l, n, i, s, o)
-					{
-						var m;
-						return Object(_.a)(this, a), (m = t.call(this)).errorGlow = new ce.Q, m.hover = !1, m.selected = !1, m.highlighted = !1, m.error = !1, m.resizable = !0, m.fixed = !1, m.stackable = !1, m.stackontop = !1, m.overlappable = !1, m.allowRotate = !0, m.obstructFloorMoves = !0, m.emissiveColor = 2236962, m.errorColor = 16711680, m.flippable = !1, m.flipped = !1, m.dragOffset = new ce.Lb, m.childMeshes = [], m.morphAlign = 0, m.hullPointsCollection = [], m.boundingGizmo = null, m.prevPosition = {
-							x: null,
-							y: null,
-							z: null
-						}, m.prevRotation = null, m.prevMorph = {}, m.initObject = function (e, t, a, l)
-						{
-							console.log("init obejct"), this.halfSize = this.objectHalfSize(), this.prepareMeshes(e), this.configDimensionLabels(), t ? (this.position.copy(t), this.position_set = !0) : (this.position.set(0, 0, 0), this.position_set = !1), this.dimensionHelper.position.copy(this.position), a && (this.rotation.y = a, this.dimensionHelper.rotation.y = a), this.castShadow = !0, this.receiveShadow = !0, this.moveChildMeshes(), this.rotateChildMeshes(), this.setOptions(l), this.placeInRoom()
-						}, m.getOptions = function ()
-						{
-							return {
-								morph: m.morph,
-								textures: m.textures,
-								styles: m.styles,
-								fixed: m.fixed,
-								stackable: m.stackable,
-								stackontop: m.stackontop,
-								overlappable: m.overlappable
-							}
-						}, m.setOptions = function (e)
-						{
-							if (e)
-							{
-								if (e.hasOwnProperty("fixed") && (m.fixed = e.fixed), e.hasOwnProperty("stackable") && (m.stackable = e.stackable), e.hasOwnProperty("stackontop") && (m.stackontop = e.stackontop), e.hasOwnProperty("overlappable") && (m.overlappable = e.overlappable), e.morph)
-									for (var t in e.morph) m.setMorph(t, e.morph[t]);
-								if (e.textures)
-									for (t in e.textures) m.updateMaterial(t, e.textures[t].material, e.textures[t].size);
-								if (e.styles)
-									for (t in e.styles) m.updateStyle(t, e.styles[t])
-							}
-						}, m.getCollidableMeshList = function ()
-						{
-							var e, t = [],
-								a = Object(L.a)(m.children);
-							try
-							{
-								for (a.s(); !(e = a.n()).done;)
-								{
-									var l = e.value,
-										n = !1;
-									Oe.forEach((function (e)
-									{
-										l.name.toLowerCase().includes(e) && (n = !0)
-									})), n || t.push(l)
-								}
-							}
-							catch (i)
-							{
-								a.e(i)
-							}
-							finally
-							{
-								a.f()
-							}
-							return t
+{
+	var m;
+	return Object(_.a)(this, a), (m = t.call(this)).errorGlow = new ce.Q, m.hover = !1, m.selected = !1, m.highlighted = !1, m.error = !1, m.resizable = !0, m.fixed = !1, m.stackable = !1, m.stackontop = !1, m.overlappable = !1, m.allowRotate = !0, m.obstructFloorMoves = !0, m.emissiveColor = 2236962, m.errorColor = 16711680, m.flippable = !1, m.flipped = !1, m.dragOffset = new ce.Lb, m.childMeshes = [], m.morphAlign = 0, m.hullPointsCollection = [], m.boundingGizmo = null, m.prevPosition = {
+		x: null,
+		y: null,
+		z: null
+	}, m.prevRotation = null, m.prevMorph = {},
+
+	m.initObject = function (e, t, a, l)
+{
+	this.halfSize = this.objectHalfSize();
+
+	if (!this.halfSize || !this.halfSize.x || !this.halfSize.y || !this.halfSize.z)
+	{
+		this.halfSize = {
+			x: 12,
+			y: 12,
+			z: 6
+		};
+	}
+
+	this.prepareMeshes(e);
+	this.configDimensionLabels();
+
+	if (!this.morph)
+	{
+		this.morph = {
+			height: 24,
+			width: 24,
+			depth: 12
+		};
+	}
+
+	if (t)
+	{
+		this.position.copy(t);
+		this.position_set = true;
+	}
+	else
+	{
+		this.position.set(0, this.halfSize.y, 0);
+		this.position_set = false;
+	}
+	this.dimensionHelper.position.copy(this.position);
+
+	a && (this.rotation.y = a, this.dimensionHelper.rotation.y = a);
+
+	this.castShadow = true;
+	this.receiveShadow = true;
+
+	this.moveChildMeshes();
+	this.rotateChildMeshes();
+	this.setOptions(l);
+	this.placeInRoom();
+},
+	// ✅ getOptions function
+	m.getOptions = function ()
+	{
+		return {
+			morph: m.morph,
+			textures: m.textures,
+			styles: m.styles,
+			fixed: m.fixed,
+			stackable: m.stackable,
+			stackontop: m.stackontop,
+			overlappable: m.overlappable
+		};
+	},
+
+	// ✅ setOptions function
+	m.setOptions = function (e)
+	{
+		if (e)
+		{
+			if (e.hasOwnProperty("fixed")) m.fixed = e.fixed;
+			if (e.hasOwnProperty("stackable")) m.stackable = e.stackable;
+			if (e.hasOwnProperty("stackontop")) m.stackontop = e.stackontop;
+			if (e.hasOwnProperty("overlappable")) m.overlappable = e.overlappable;
+			
+			if (e.morph)
+				for (var t in e.morph) m.setMorph(t, e.morph[t]);
+			
+			if (e.textures)
+				for (t in e.textures) m.updateMaterial(t, e.textures[t].material, e.textures[t].size);
+			
+			if (e.styles)
+				for (t in e.styles) m.updateStyle(t, e.styles[t]);
+		}
+	},
+
+	// ✅ getCollidableMeshList function
+	m.getCollidableMeshList = function ()
+	{
+		var e, t = [],
+			a = Object(L.a)(m.children);
+		try
+		{
+			for (a.s(); !(e = a.n()).done;)
+			{
+				var l = e.value,
+					n = !1;
+				Oe.forEach((function (e)
+				{
+					l.name.toLowerCase().includes(e) && (n = !0);
+				}));
+				n || t.push(l);
+			}
+		}
+		catch (e)
+		{
+			a.e(e);
+		}
+		finally
+		{
+			a.f();
+		}
+		return t
 						}, m.addLinkedItem = function (e)
 						{
 							e !== Object(ve.a)(m) && (m.removeLinkedItem(e) || (e.groupParent = Object(ve.a)(m), e.setSelected(), m.linkedItems.push(e), document.dispatchEvent(new CustomEvent(ee.BP3D_EVENT_LINKED_ITEMS_CHANGED,
@@ -3562,11 +3623,17 @@
 													if (e.name.includes("glide"))
 													{
 														var a = e.material;
-														e.material = new ce.U, ce.R.prototype.copy.call(e.material, a);
+														e.material = new ce.U;
+														ce.R.prototype.copy.call(e.material, a);
 														var l = e.material;
-														l.roughness = 0, l.metalness = .8, l.color.setHex(0), l.envMap = t.scene.environment, l.envMapIntensity = 2, console.log(l)
+														l.roughness = 0;
+														l.metalness = 0.8;
+														l.color.setHex(0);
+														l.envMap = t.scene.environment;
+														l.envMapIntensity = 2;
+														console.log(l);
 													}
-												}()
+												}
 										}
 										catch (o)
 										{
@@ -4599,7 +4666,18 @@
 									styles: t,
 									textures: l
 								}
-						}, this.model = t, this.textureDir = a, this.scene = new ce.tb, this.GLTFLoader = new Le.a, this.GLTFLoader.crossOrigin = ""
+						}, this.model = t;
+						this.textureDir = a;
+						this.scene = new ce.tb;
+						
+						// ✅ Setup GLTFLoader properly
+						this.GLTFLoader = new Le.a;
+						this.GLTFLoader.crossOrigin = ""; // ✅ Allow Cross-Origin
+						this.GLTFLoader.setResourcePath = function() {}; // ✅ Disable slow external resource loading
+						
+						this.items = [];
+						this.itemRemovedCallbacks = [];
+						this.itemLoadingCallbacks = [];						
 					}
 					return Object(g.a)(e, [
 					{
@@ -4677,73 +4755,147 @@
 											var d = m;
 											m.itemLoadingCallbacks.forEach((function (e)
 											{
-												return "function" === typeof e && e()
-											})), m.GLTFLoader.load(a, (function (a)
+												return "function" === typeof e && e();
+											}));m.GLTFLoader.load(a, (function (a)
 											{
-												console.log(a);
+												console.log("✅ Loaded GLB:", a);
+											
+												// ✅ SPEED TRICK: Disable slow animations/skeletons/frustum culling
+												a.scene.traverse(function (e)
+												{
+													if (e.isMesh)
+													{
+														e.frustumCulled = false; // ✅ Faster drawing
+														e.castShadow = true;
+														e.receiveShadow = true;
+											
+														if (e.animations) e.animations = []; // ✅ Remove unused animations
+														if (e.isSkinnedMesh) e.skeleton = null; // ✅ Remove unused skeleton
+													}
+												});
+											
 												var m = [],
 													b = {},
 													r = {},
 													p = {};
-												a.scene.traverse((function (e)
+											
+												a.scene.traverse(function (e)
 												{
 													if (e.isMesh)
-														if (e.name.includes("morph-") || m.push(e), e.name.includes("morph-height"))
+													{
+														console.log("🧩 Found mesh:", e.name);
+														m.push(e);
+											
+														var hasMorph = false;
+											
+														if (e.name.includes("morph-height"))
 														{
 															var t = e.name.replace("-morph-height", ""),
 																a = [];
-															e.geometry.attributes.uv.array.forEach((function (e)
+															e.geometry.attributes.uv.array.forEach(function (e)
 															{
-																return a.push(e)
-															})), b[t] = a
+																return a.push(e);
+															});
+															b[t] = a;
+															hasMorph = true;
 														}
-													else if (e.name.includes("morph-width"))
-													{
-														var l = e.name.replace("-morph-width", ""),
-															n = [];
-														e.geometry.attributes.uv.array.forEach((function (e)
+														else if (e.name.includes("morph-width"))
 														{
-															return n.push(e)
-														})), r[l] = n
-													}
-													else if (e.name.includes("morph-depth"))
-													{
-														var i = e.name.replace("-morph-depth", ""),
-															s = [];
-														e.geometry.attributes.uv.array.forEach((function (e)
+															var l = e.name.replace("-morph-width", ""),
+																n = [];
+															e.geometry.attributes.uv.array.forEach(function (e)
+															{
+																return n.push(e);
+															});
+															r[l] = n;
+															hasMorph = true;
+														}
+														else if (e.name.includes("morph-depth"))
 														{
-															return s.push(e)
-														})), p[i] = s
+															var i = e.name.replace("-morph-depth", ""),
+																s = [];
+															e.geometry.attributes.uv.array.forEach(function (e)
+															{
+																return s.push(e);
+															});
+															p[i] = s;
+															hasMorph = true;
+														}
+											
+														// ✅ If no morphs found, create default UVs manually
+														if (!hasMorph)
+														{
+															var safeName = e.name || ("mesh_" + m.length);
+											
+															var defaultUV = [];
+															if (e.geometry.attributes.uv)
+															{
+																e.geometry.attributes.uv.array.forEach(function (e)
+																{
+																	return defaultUV.push(e);
+																});
+															}
+															else
+															{
+																defaultUV = [0, 0, 0, 0];
+															}
+											
+															b[safeName + "_height"] = defaultUV.slice();
+															r[safeName + "_width"] = defaultUV.slice();
+															p[safeName + "_depth"] = defaultUV.slice();
+														}
 													}
-												}));
+												});
+											
+												// ✅ Safe fallback: If still missing UVs, insert default
+												if (Object.keys(b).length === 0) { 
+													b["default_height"] = [0, 24, 0, 24];
+												}
+												if (Object.keys(r).length === 0) { 
+													r["default_width"] = [0, 24, 0, 24];
+												}
+												if (Object.keys(p).length === 0) { 
+													p["default_depth"] = [0, 12, 0, 12];
+												}
+											
 												var c = [b, r, p],
-													h = new(nt.Factory.getClass(t))(d.model, Object(f.a)(Object(f.a)(
-													{}, l),
+													h = new (nt.Factory.getClass(t))(d.model, Object(f.a)(Object(f.a)({}, l),
 													{},
 													{
 														morphUVs: c
 													}), m, n, i, s);
-												console.log(m, n, i, s), console.log("item line 185", h), h.initObject(m, n, i, s), console.log("item 187", h), d.items.push(h), d.add(h), o && d.itemLoadedCallbacks.forEach((function (e)
+											
+												console.log("✅ Object created:", h);
+											
+												h.initObject(m, n, i, s);
+											
+												d.items.push(h);
+												d.add(h);
+											
+												o && d.itemLoadingCallbacks.forEach(function (e)
 												{
-													return "function" === typeof e && e(h)
-												})), e(h)
-											}), void 0, (function ()
+													return "function" === typeof e && e(h);
+												});
+											
+												e(h);
+											}), void 0, function ()
 											{
-												e(null)
-											}))
+												e(null);
+											});											
+											
 										})));
 									case 3:
 									case "end":
-										return e.stop()
+										return e.stop();
 									}
-								}), e)
+								}), e);
 							})));
 							return function (t, a, l, n, i, s)
 							{
-								return e.apply(this, arguments)
+								return e.apply(this, arguments);
 							}
 						}()
-					},
+					},					
 					{
 						key: "importSetFromBuilder",
 						value: function ()
@@ -21720,9 +21872,8 @@
 					{
 						name: "BC-MB",
 						image: "/blueprint3D-assets/models/thumbnails/br-bml.jpg",
-						model: "/blueprint3D-assets/models/glb/E2.glb",
+						model: "/blueprint3D-assets/models/glb/treadmill.glb",
 						type: "1",
-						stackontop: !0,
 						morph: [
 						{
 							label: "Height",
@@ -21755,9 +21906,9 @@
 						}]
 					},
 					{
-						name: "BC-RC",
+						name: "BC-RCcc",
 						image: "/blueprint3D-assets/models/thumbnails/br-bml.jpg",
-						model: "/blueprint3D-assets/models/glb/special\bedDouble.glb",
+						model: "/blueprint3D-assets/models/glb/A0y3.glb",
 						type: "1",
 						stackontop: !0,
 						morph: [
@@ -21772,13 +21923,19 @@
 							index: 1,
 							min: 24,
 							max: 60
+						},
+						{
+							label: "Depth",
+							index: 2,
+							min: 12,
+							max: 60
 						}],
 						materials: [
 						{
 							label: "Top",
 							name_in_model: "cabinet-top",
 							types: Nt
-						},
+						}, 
 						{
 							label: "Body",
 							name_in_model: "cabinet-body",
@@ -28857,9 +29014,45 @@
 					category: "SPORTSTECH",
 					styles: [
 					{
-						name: "BIN-SB",
-						image: "/blueprint3D-assets/models/thumbnails/sssssss.jpg",
-						model: "/blueprint3D-assets/models/glb/sBike.glb",
+						name: "Tread-mill",
+						image: "/blueprint3D-assets/models/thumbnails/treadmill.webp",
+						model: "/blueprint3D-assets/models/glb/A0y3.glb",
+						type: "1",
+						morph: [
+						{
+							label: "Height",
+							index: 0,
+							min: 24,
+							max: 108
+						},
+						{
+							label: "Width",
+							index: 1,
+							min: 24,
+							max: 108
+						},
+						{
+							label: "Depth",
+							index: 2,
+							min: 60,
+							max: 60
+						}],
+						materials: [
+						{
+							label: "Body",
+							name_in_model: "T_bin",
+							types: Nt
+						},
+						{
+							label: "Body",
+							name_in_model: "T_bin",
+							types: Nt
+						}]
+					},
+					{
+						name: "sPAD500",
+						image: "/blueprint3D-assets/models/thumbnails/SPAD500.webp",
+						model: "/blueprint3D-assets/models/glb/sPad500.glb",
 						type: "1",
 						morph: [
 						{
