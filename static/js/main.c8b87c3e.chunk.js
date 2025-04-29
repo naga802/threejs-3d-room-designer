@@ -4749,18 +4749,13 @@
 									for (;;) switch (e.prev = e.next)
 									{
 									case 0:
-										return o = !(d.length > 6 && void 0 !== d[6]) || d[6], console.log("adding item"), e.abrupt("return", new Promise((function (e)
+										return o = !(d.length > 6 && void 0 !== d[6]) || d[6], e.abrupt("return", new Promise((function (e)
 										{
-											t = t || 1;
 											var d = m;
-											m.itemLoadingCallbacks.forEach(function (e)
-											{
-												return "function" === typeof e && e();
-											}),
-											
+					
 											m.GLTFLoader.load(a, function (a)
 											{
-												console.log("✅ Loaded GLB:", a);
+												console.log("✅ Loaded model");
 					
 												a.scene.traverse(function (e)
 												{
@@ -4770,38 +4765,17 @@
 														e.receiveShadow = true;
 												});
 					
-												var m = [];
-												
-												a.scene.traverse(function (e)
-												{
-													if (e.isMesh)
-														m.push(e);
-												});
+												// Just add directly
+												d.scene.add(a.scene);
+												d.items.push(a.scene);
 					
-												var c = [{}, {}, {}], // Empty UVs to skip heavy processing
-													h = new (nt.Factory.getClass(t))(d.model, Object(f.a)(Object(f.a)({}, l), {}, {
-														morphUVs: c
-													}), m, n, i, s);
-					
-												console.log("✅ Object created:", h);
-					
-												h.initObject(m, n, i, s);
-					
-												d.items.push(h);
-												d.add(h);
-					
-												o && d.itemLoadingCallbacks.forEach(function (e)
-												{
-													return "function" === typeof e && e(h);
-												});
-					
-												e(h);
+												e(a.scene);
 											}, void 0, function ()
 											{
 												e(null);
 											});
 										})));
-									case 3:
+									case 1:
 									case "end":
 										return e.stop();
 									}
@@ -4812,7 +4786,8 @@
 								return e.apply(this, arguments);
 							}
 						}()
-					},					
+					},
+								
 										
 					{
 						key: "importSetFromBuilder",
@@ -28932,9 +28907,9 @@
 					category: "SPORTSTECH",
 					styles: [
 					{
-						name: "sBike",
-						image: "/blueprint3D-assets/models/thumbnails/treadmill.webp",
-						model: "/blueprint3D-assets/models/glb/bi.glb",
+						name: "sTread",
+						image: "/blueprint3D-assets/models/thumbnails/sTread.jpg",
+						model: "/blueprint3D-assets/models/glb/sTread.glb",
 						type: "1",
 						morph: [
 						{
@@ -28968,9 +28943,45 @@
 						}]
 					},
 					{
-						name: "sPAD500",
-						image: "/blueprint3D-assets/models/thumbnails/SPAD500.webp",
-						model: "/blueprint3D-assets/models/glb/A0y4.glb",
+						name: "sRow",
+						image: "/blueprint3D-assets/models/thumbnails/sRow.jpg",
+						model: "/blueprint3D-assets/models/glb/sRow.glb",
+						type: "1",
+						morph: [
+						{
+							label: "Height",
+							index: 0,
+							min: 24,
+							max: 108
+						},
+						{
+							label: "Width",
+							index: 1,
+							min: 24,
+							max: 108
+						},
+						{
+							label: "Depth",
+							index: 2,
+							min: 60,
+							max: 60
+						}],
+						materials: [
+						{
+							label: "Body",
+							name_in_model: "T_bin",
+							types: Nt
+						},
+						{
+							label: "Body",
+							name_in_model: "T_bin",
+							types: Nt
+						}]
+					},
+					{
+						name: "sBike",
+						image: "/blueprint3D-assets/models/thumbnails/sBike.webp",
+						model: "/blueprint3D-assets/models/glb/sBike.glb",
 						type: "1",
 						morph: [
 						{
