@@ -4753,136 +4753,53 @@
 										{
 											t = t || 1;
 											var d = m;
-											m.itemLoadingCallbacks.forEach((function (e)
+											m.itemLoadingCallbacks.forEach(function (e)
 											{
 												return "function" === typeof e && e();
-											}));m.GLTFLoader.load(a, (function (a)
+											}),
+											
+											m.GLTFLoader.load(a, function (a)
 											{
 												console.log("✅ Loaded GLB:", a);
-											
-												// ✅ SPEED TRICK: Disable slow animations/skeletons/frustum culling
+					
 												a.scene.traverse(function (e)
 												{
 													if (e.isMesh)
-													{
-														e.frustumCulled = false; // ✅ Faster drawing
-														e.castShadow = true;
+														e.frustumCulled = false,
+														e.castShadow = true,
 														e.receiveShadow = true;
-											
-														if (e.animations) e.animations = []; // ✅ Remove unused animations
-														if (e.isSkinnedMesh) e.skeleton = null; // ✅ Remove unused skeleton
-													}
 												});
-											
-												var m = [],
-													b = {},
-													r = {},
-													p = {};
-											
+					
+												var m = [];
+												
 												a.scene.traverse(function (e)
 												{
 													if (e.isMesh)
-													{
-														console.log("🧩 Found mesh:", e.name);
 														m.push(e);
-											
-														var hasMorph = false;
-											
-														if (e.name.includes("morph-height"))
-														{
-															var t = e.name.replace("-morph-height", ""),
-																a = [];
-															e.geometry.attributes.uv.array.forEach(function (e)
-															{
-																return a.push(e);
-															});
-															b[t] = a;
-															hasMorph = true;
-														}
-														else if (e.name.includes("morph-width"))
-														{
-															var l = e.name.replace("-morph-width", ""),
-																n = [];
-															e.geometry.attributes.uv.array.forEach(function (e)
-															{
-																return n.push(e);
-															});
-															r[l] = n;
-															hasMorph = true;
-														}
-														else if (e.name.includes("morph-depth"))
-														{
-															var i = e.name.replace("-morph-depth", ""),
-																s = [];
-															e.geometry.attributes.uv.array.forEach(function (e)
-															{
-																return s.push(e);
-															});
-															p[i] = s;
-															hasMorph = true;
-														}
-											
-														// ✅ If no morphs found, create default UVs manually
-														if (!hasMorph)
-														{
-															var safeName = e.name || ("mesh_" + m.length);
-											
-															var defaultUV = [];
-															if (e.geometry.attributes.uv)
-															{
-																e.geometry.attributes.uv.array.forEach(function (e)
-																{
-																	return defaultUV.push(e);
-																});
-															}
-															else
-															{
-																defaultUV = [0, 0, 0, 0];
-															}
-											
-															b[safeName + "_height"] = defaultUV.slice();
-															r[safeName + "_width"] = defaultUV.slice();
-															p[safeName + "_depth"] = defaultUV.slice();
-														}
-													}
 												});
-											
-												// ✅ Safe fallback: If still missing UVs, insert default
-												if (Object.keys(b).length === 0) { 
-													b["default_height"] = [0, 24, 0, 24];
-												}
-												if (Object.keys(r).length === 0) { 
-													r["default_width"] = [0, 24, 0, 24];
-												}
-												if (Object.keys(p).length === 0) { 
-													p["default_depth"] = [0, 12, 0, 12];
-												}
-											
-												var c = [b, r, p],
-													h = new (nt.Factory.getClass(t))(d.model, Object(f.a)(Object(f.a)({}, l),
-													{},
-													{
+					
+												var c = [{}, {}, {}], // Empty UVs to skip heavy processing
+													h = new (nt.Factory.getClass(t))(d.model, Object(f.a)(Object(f.a)({}, l), {}, {
 														morphUVs: c
 													}), m, n, i, s);
-											
+					
 												console.log("✅ Object created:", h);
-											
+					
 												h.initObject(m, n, i, s);
-											
+					
 												d.items.push(h);
 												d.add(h);
-											
+					
 												o && d.itemLoadingCallbacks.forEach(function (e)
 												{
 													return "function" === typeof e && e(h);
 												});
-											
+					
 												e(h);
-											}), void 0, function ()
+											}, void 0, function ()
 											{
 												e(null);
-											});											
-											
+											});
 										})));
 									case 3:
 									case "end":
@@ -4896,6 +4813,7 @@
 							}
 						}()
 					},					
+										
 					{
 						key: "importSetFromBuilder",
 						value: function ()
@@ -29014,9 +28932,9 @@
 					category: "SPORTSTECH",
 					styles: [
 					{
-						name: "Tread-mill",
+						name: "sBike",
 						image: "/blueprint3D-assets/models/thumbnails/treadmill.webp",
-						model: "/blueprint3D-assets/models/glb/A0y3.glb",
+						model: "/blueprint3D-assets/models/glb/bi.glb",
 						type: "1",
 						morph: [
 						{
@@ -29052,7 +28970,7 @@
 					{
 						name: "sPAD500",
 						image: "/blueprint3D-assets/models/thumbnails/SPAD500.webp",
-						model: "/blueprint3D-assets/models/glb/s2.glb",
+						model: "/blueprint3D-assets/models/glb/A0y4.glb",
 						type: "1",
 						morph: [
 						{
