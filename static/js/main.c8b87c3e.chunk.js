@@ -1,3 +1,4 @@
+// import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
 (this["webpackJsonpblueprint3d-react-test"] = this["webpackJsonpblueprint3d-react-test"] || []).push([
 	[0],
 	{
@@ -755,11 +756,18 @@
 									n.drawCorner(e)
 								})), n.floorplan.getItems().forEach((function (e)
 								{
-									n.drawItem(e), n.drawItemLabel(
-									{
-										x: e.position.x,
-										y: e.position.z
-									}, e.metadata.name)
+									if (
+										e &&
+										e.position &&
+										e.metadata &&
+										typeof e.metadata.name === "string"
+									) {
+										n.drawItem(e);
+										n.drawItemLabel(
+											{ x: e.position.x, y: e.position.z },
+											e.metadata.name
+										);
+									}
 								})), n.viewmodel.mode === ae && n.drawTarget(n.viewmodel.targetX, n.viewmodel.targetY, n.viewmodel.lastNode), n.floorplan.getWalls().forEach((function (e)
 								{
 									n.drawWallLabels(e)
@@ -879,20 +887,37 @@
 						value: function (e)
 						{
 							var t = this;
-							e.getSnapPoints().forEach((function (a)
+					
+							// ✅ Guard against missing function
+							if (typeof e.getSnapPoints === "function")
 							{
-								! function (a)
+								e.getSnapPoints().forEach(function (a)
 								{
-									var l = [],
-										n = [];
-									a.forEach((function (e)
+									!function (a)
 									{
-										l.push(t.viewmodel.convertX(e.x)), n.push(t.viewmodel.convertY(e.y))
-									})), t.drawPolygon(l, n, !0, e === t.viewmodel.activeItem ? "#0000ff22" : "#33333311", !0, "#444", 1)
-								}(a)
-							}))
+										var l = [],
+											n = [];
+					
+										a.forEach(function (e)
+										{
+											l.push(t.viewmodel.convertX(e.x));
+											n.push(t.viewmodel.convertY(e.y));
+										});
+					
+										t.drawPolygon(
+											l,
+											n,
+											true,
+											e === t.viewmodel.activeItem ? "#0000ff22" : "#33333311",
+											true,
+											"#444",
+											1
+										);
+									}(a);
+								});
+							}
 						}
-					},
+					},					
 					{
 						key: "drawItemLabel",
 						value: function (e, t)
@@ -1685,24 +1710,31 @@
 					},
 					{
 						key: "remove",
-						value: function ()
-						{
+						value: function () {
 							var e = this;
-							this.deleted_callbacks.forEach((function (t)
-							{
-								return "function" === typeof t && t(e)
-							}))
+							this.deleted_callbacks.forEach(function (t) {
+								return typeof t === "function" && t(e);
+							});
 						}
 					},
 					{
 						key: "removeAll",
-						value: function ()
-						{
-							for (var e = 0; e < this.wallStarts.length; e++) this.wallStarts[e].remove();
-							for (e = 0; e < this.wallEnds.length; e++) this.wallEnds[e].remove();
-							this.remove()
+						value: function () {
+							for (var e = 0; e < this.wallStarts.length; e++) {
+								if (this.wallStarts[e] && typeof this.wallStarts[e].remove === "function") {
+									this.wallStarts[e].remove();
+								}
+							}
+							for (e = 0; e < this.wallEnds.length; e++) {
+								if (this.wallEnds[e] && typeof this.wallEnds[e].remove === "function") {
+									this.wallEnds[e].remove();
+								}
+							}
+							if (typeof this.remove === "function") {
+								this.remove();
+							}
 						}
-					},
+					},					
 					{
 						key: "move",
 						value: function (e, t)
@@ -2368,7 +2400,10 @@
 							})));
 							this.getItems().forEach((function (t)
 							{
-								return e.push.apply(e, Object(he.a)(t.getCorners()))
+								if (t && typeof t.getCorners === "function")
+								{
+									return e.push.apply(e, Object(he.a)(t.getCorners()))
+								}
 							}));
 							for (var t = [], a = [], l = 0; l < e.length; l++)
 							{
@@ -3278,29 +3313,36 @@
 						{
 							var t, a = -1,
 								l = Object(L.a)(m.linkedItems.entries());
-							try
-							{
-								for (l.s(); !(t = l.n()).done;)
-								{
+						
+							try {
+								for (l.s(); !(t = l.n()).done;) {
 									var n = Object(Y.a)(t.value, 2),
 										i = n[0];
-									if (n[1] === e)
-									{
+									if (n[1] === e) {
 										a = i;
-										break
+										break;
 									}
 								}
+							} catch (s) {
+								l.e(s);
+							} finally {
+								l.f();
 							}
-							catch (s)
-							{
-								l.e(s)
+						
+							if (a >= 0) {
+								e.groupParent = null;
+						
+								// ✅ Safe: only call if it exists
+								if (typeof e.setUnselected === "function") {
+									e.setUnselected();
+								}
+						
+								m.linkedItems.splice(a, 1);
+								return true;
+							} else {
+								document.dispatchEvent(new CustomEvent(ee.BP3D_EVENT_LINKED_ITEMS_CHANGED, {}));
+								return false;
 							}
-							finally
-							{
-								l.f()
-							}
-							return a >= 0 ? (e.groupParent = null, e.setUnselected(), m.linkedItems.splice(a, 1), !0) : (document.dispatchEvent(new CustomEvent(ee.BP3D_EVENT_LINKED_ITEMS_CHANGED,
-							{})), !1)
 						}, m.checkIsLinkedMesh = function (e)
 						{
 							var t = !1;
@@ -3310,11 +3352,19 @@
 							})), t
 						}, m.clearLinkedItems = function ()
 						{
-							m.linkedItems.forEach((function (e)
-							{
-								e.groupParent = null, e.setUnselected()
-							})), m.linkedItems = [], document.dispatchEvent(new CustomEvent(ee.BP3D_EVENT_LINKED_ITEMS_CHANGED,
-							{}))
+							m.linkedItems.forEach(function (e) {
+								// ✅ Always safe to clear parent
+								e.groupParent = null;
+						
+								// ✅ Only call if method exists
+								if (typeof e.setUnselected === "function") {
+									e.setUnselected();
+								}
+							});
+						
+							m.linkedItems = [];
+						
+							document.dispatchEvent(new CustomEvent(ee.BP3D_EVENT_LINKED_ITEMS_CHANGED, {}));
 						}, m.getCenterWithLinkedItems = function ()
 						{
 							var e = [];
@@ -3936,9 +3986,12 @@
 						key: "mouseOff",
 						value: function ()
 						{
-							this.hover = !1, this.updateHighlight()
+							if (typeof this.updateHighlight === "function") {
+								this.hover = false;
+								this.updateHighlight();
+							}
 						}
-					},
+					},					
 					{
 						key: "setSelected",
 						value: function ()
@@ -4549,22 +4602,31 @@
 						key: "setSelected",
 						value: function ()
 						{
-							this.selected = !0, this.updateHighlight(), this.linkedItems.forEach((function (e)
-							{
-								return e.setUnselected()
-							}))
+							this.selected = true;
+							this.updateHighlight();
+					
+							this.linkedItems.forEach(function (e) {
+								if (typeof e.setUnselected === "function") {
+									e.setUnselected();
+								}
+							});
 						}
-					},
+					},					
 					{
 						key: "setUnselected",
 						value: function ()
 						{
-							this.selected = !1, this.linkedItems.forEach((function (e)
-							{
-								return e.setUnselected()
-							})), this.updateHighlight()
+							this.selected = false;
+					
+							this.linkedItems.forEach(function (e) {
+								if (typeof e.setUnselected === "function") {
+									e.setUnselected();
+								}
+							});
+					
+							this.updateHighlight();
 						}
-					},
+					},					
 					{
 						key: "updateHighlight",
 						value: function ()
@@ -4740,7 +4802,7 @@
 						key: "addItem",
 						value: function ()
 						{
-							var e = Object(u.a)(y.a.mark((function e(t, a, l, n, i, s)
+							var e = Object(u.a)(y.a.mark((function e(t, a, l, n, i, s, camera, renderer, orbitControls)
 							{
 								var o, m = this,
 									d = arguments;
@@ -4749,25 +4811,43 @@
 									for (;;) switch (e.prev = e.next)
 									{
 									case 0:
-										return o = !(d.length > 6 && void 0 !== d[6]) || d[6], e.abrupt("return", new Promise((function (e)
+										return o = !(d.length > 6 && void 0 !== d[6]) || d[6], console.log("adding item"), e.abrupt("return", new Promise((function (e)
 										{
+											t = t || 1;
 											var d = m;
+					
+											m.itemLoadingCallbacks.forEach(function (e)
+											{
+												return "function" === typeof e && e();
+											});
 					
 											m.GLTFLoader.load(a, function (a)
 											{
-												console.log("✅ Loaded model");
+												console.log("✅ Loaded GLB:", a);
 					
 												a.scene.traverse(function (e)
 												{
 													if (e.isMesh)
-														e.frustumCulled = false,
-														e.castShadow = true,
+													{
+														e.frustumCulled = false;
+														e.castShadow = true;
 														e.receiveShadow = true;
+														e.userData.selectable = true;
+													}
 												});
 					
-												// Just add directly
-												d.scene.add(a.scene);
+												d.add(a.scene);
 												d.items.push(a.scene);
+
+												console.log("🧪 DragControls available?", THREE.DragControls);
+												setupDragControls(
+													d.scene,
+													camera,
+													renderer,
+													orbitControls,
+													() => "MOVE"
+												);
+												console.log("Selectable count:", scene.children.filter(c => c.isMesh && c.userData.selectable).length);
 					
 												e(a.scene);
 											}, void 0, function ()
@@ -4775,26 +4855,25 @@
 												e(null);
 											});
 										})));
-									case 1:
+									case 3:
 									case "end":
 										return e.stop();
 									}
 								}), e);
 							})));
-							return function (t, a, l, n, i, s)
+							return function (t, a, l, n, i, s, camera, renderer, orbitControls)
 							{
 								return e.apply(this, arguments);
 							}
 						}()
-					},
-								
-										
+					},																	
 					{
 						key: "importSetFromBuilder",
 						value: function ()
 						{
 							var e = Object(u.a)(y.a.mark((function e(t, a, l, n, i)
 							{
+								
 								var s, o, m, d, b, r;
 								return y.a.wrap((function (e)
 								{
@@ -5419,13 +5498,29 @@
 					{
 						e = e || m;
 						var t = s.itemIntersection(m, r);
-						t && r.clickPressed(t)
-					}
-
-					function k(e)
+					
+						if (t && r && typeof r.clickPressed === "function") {
+							r.clickPressed(t);
+						}
+					}					
 					{
-						e === r && (r && (r.setUnselected() || r.clearLinkedItems()), r.mouseOff(), s.setSelectedObject(null))
-					}
+						if (e === r) {
+							if (r) {
+								if (typeof r.setUnselected === "function") {
+									r.setUnselected();
+								}
+								if (typeof r.clearLinkedItems === "function") {
+									r.clearLinkedItems();
+								}
+								if (typeof r.mouseOff === "function") {
+									r.mouseOff();
+								}
+							}
+							if (s && typeof s.setSelectedObject === "function") {
+								s.setSelectedObject(null);
+							}
+						}
+					}					
 
 					function T(a)
 					{
@@ -5484,7 +5579,20 @@
 							{
 								e = e || m;
 								var t = s.itemIntersection(m, r);
-								t && (s.isRotating() ? !Boolean(r.fixed) && r.rotate(t) : r.clickDragged(t))
+								if (t)
+								{
+									if (s.isRotating())
+									{
+										if (!Boolean(r.fixed) && typeof r.rotate === "function")
+										{
+											r.rotate(t);
+										}
+									}
+									else if (typeof r.clickDragged === "function")
+									{
+										r.clickDragged(t);
+									}
+								}
 							}(), i.update(), s.needsUpdate = !0
 						}
 					}
@@ -5510,13 +5618,18 @@
 					function C(e)
 					{
 						if (!ee.Configuration.getBooleanValue(ee.configSceneLocked) && s.enabled) switch (c = !1, f)
-						{
-						case g:
-							r.clickReleased(), B(_);
-							break;
-						case x:
-							B(h ? _ : D)
-						}
+							{
+								case g:
+									if (r && typeof r.clickReleased === "function")
+									{
+										r.clickReleased();
+									}
+									B(_);
+									break;
+							
+								case x:
+									B(h ? _ : D);
+							}							
 					}
 
 					function B(t)
@@ -5565,7 +5678,27 @@
 
 					function O()
 					{
-						null != d ? null != b ? b !== d && (b.mouseOff(), (b = d).mouseOver(), s.needsUpdate = !0) : ((b = d).mouseOver(), e.setCursorStyle("pointer"), s.needsUpdate = !0) : null != b && (b.mouseOff(), e.setCursorStyle("auto"), b = null, s.needsUpdate = !0)
+						if (d != null) {
+							if (b != null) {
+								if (b !== d) {
+									if (typeof b.mouseOff === "function") b.mouseOff();
+									b = d;
+									if (typeof b.mouseOver === "function") b.mouseOver();
+									s.needsUpdate = true;
+								}
+							} else {
+								b = d;
+								if (typeof b.mouseOver === "function") b.mouseOver();
+								e.setCursorStyle("pointer");
+								s.needsUpdate = true;
+							}
+						} else if (b != null) {
+							if (typeof b.mouseOff === "function") b.mouseOff();
+							e.setCursorStyle("auto");
+							b = null;
+							s.needsUpdate = true;
+						}
+						
 					}
 					this.needsUpdate = !0, this.isRotating = function ()
 						{
@@ -5575,9 +5708,12 @@
 							return r
 						}, this.itemIntersection = function (e, t)
 						{
-							var a = t.customIntersectionPlanes(),
-								l = null;
-							return (l = a && a.length > 0 ? this.getIntersections(e, a, !0) : this.getIntersections(e, o)).length > 0 ? l[0] : null
+							var a = (t && typeof t.customIntersectionPlanes === "function")
+								? t.customIntersectionPlanes()
+								: null;
+						
+							var l = null;
+							return (l = a && a.length > 0 ? this.getIntersections(e, a, !0) : this.getIntersections(e, o)).length > 0 ? l[0] : null;
 						}, this.getIntersections = function (e, t, l, n, i, s)
 						{
 							n = n || !1, l = l || !1, i = i || !1, s = s || .2;
@@ -5613,17 +5749,51 @@
 						{
 							var a = arguments.length > 1 && void 0 !== arguments[1] && arguments[1];
 							if (f === u && B(_), null != t)
-							{
 								if (t === r) return;
-								a && r ? r.addLinkedItem(t) : (r && (r.setUnselected() || r.clearLinkedItems()), (r = t).setSelected(), e.itemSelectedCallbacks.forEach((function (e)
-								{
-									return "function" === typeof e && e(t)
-								})))
+
+							if (a && r && typeof r.addLinkedItem === "function") {
+								r.addLinkedItem(t);
+							} else {
+								if (r) {
+									if (typeof r.setUnselected === "function") {
+										r.setUnselected();
+									}
+									if (typeof r.clearLinkedItems === "function") {
+										r.clearLinkedItems();
+									}
+								}								
+							
+								r = t;
+							
+								if (r && typeof r.setSelected === "function") {
+									r.setSelected();
+								}
+							
+								if (Array.isArray(e.itemSelectedCallbacks)) {
+									e.itemSelectedCallbacks.forEach(function (callback) {
+										if (typeof callback === "function") callback(t);
+									});
+								}
 							}
-							else r && (r.setUnselected() || r.clearLinkedItems()), r = null, e.itemUnselectedCallbacks.forEach((function (e)
-							{
-								return "function" === typeof e && e()
-							}));
+							
+							// Handle unselection (assumes `else` condition follows `if`)
+							if (!t) {
+								if (r) {
+									if (typeof r.setUnselected === "function") {
+										r.setUnselected();
+									}
+									if (typeof r.clearLinkedItems === "function") {
+										r.clearLinkedItems();
+									}
+								}
+								r = null;
+							
+								if (Array.isArray(e.itemUnselectedCallbacks)) {
+									e.itemUnselectedCallbacks.forEach(function (callback) {
+										if (typeof callback === "function") callback();
+									});
+								}
+							}							
 							this.needsUpdate = !0
 						}, l.addEventListener("mousedown", H), l.addEventListener("mouseup", C), l.addEventListener("mousemove", S), m = new ce.Kb, p.itemRemovedCallbacks.push(k), p.itemLoadedCallbacks.push(L),
 						function ()
@@ -6776,7 +6946,7 @@
 									itemType: e.type
 								})
 							}
-						}, l.addItem = function ()
+						},l.addItem = function ()
 						{
 							var e = Object(u.a)(y.a.mark((function e(t)
 							{
@@ -6786,7 +6956,33 @@
 									for (;;) switch (e.prev = e.next)
 									{
 									case 0:
-										return e.prev = 0, a = l.getDefaultData(t), n = a.defaultMorph, i = a.defaultStyles, s = a.metadata, e.next = 4, l.bp3d.model.scene.addItem(t.type, t.model, s, null, null,
+										e.prev = 0;
+						
+										// ✅ Validate input
+										if (!t || !t.model || typeof t.model !== "string")
+										{
+											console.error("❌ Invalid or missing model path:", t && t.model);
+											return e.abrupt("return", null);
+										}
+						
+										// ✅ Get metadata, styles, morphs
+										a = l.getDefaultData(t);
+										n = a.defaultMorph;
+										i = a.defaultStyles;
+										s = a.metadata;
+						
+										// ✅ Log all required inputs
+										console.log("📦 Adding item:", {
+											type: t.type,
+											model: t.model,
+											styles: i,
+											morph: n,
+											metadata: s
+										});
+						
+										// ✅ Call addItem on scene
+										e.next = 8;
+										return l.bp3d.model.scene.addItem(t.type, t.model, s, null, null,
 										{
 											styles: i,
 											morph: n,
@@ -6794,22 +6990,28 @@
 											stackontop: t.stackontop,
 											overlappable: t.overlappable
 										});
-									case 4:
-										return o = e.sent, console.log("model", o), e.abrupt("return", o);
-									case 9:
-										return e.prev = 9, e.t0 = e.catch(0), e.abrupt("return", null);
-									case 12:
+						
+									case 8:
+										o = e.sent;
+										console.log("✅ Model loaded:", o);
+										return e.abrupt("return", o);
+						
+									case 11:
+										e.prev = 11;
+										e.t0 = e.catch(0);
+										console.error("❌ Failed to load model:", e.t0);
+										return e.abrupt("return", null);
+						
+									case 15:
 									case "end":
-										return e.stop()
+										return e.stop();
 									}
-								}), e, null, [
-									[0, 9]
-								])
+								}), e, null, [[0, 11]]);
 							})));
 							return function (t)
 							{
-								return e.apply(this, arguments)
-							}
+								return e.apply(this, arguments);
+							};
 						}(), l.duplicateItem = Object(u.a)(y.a.mark((function e()
 						{
 							var t, a, n, i, s, o;
@@ -7663,94 +7865,102 @@
 							e.props.onStyleChange(t, a)
 						}, e.renderMaterialSection = function ()
 						{
-							var t = e.props.info.metadata.materials;
-							if (Array.isArray(t)) return Object(v.jsx)("div",
-							{
-								children: t.map((function (t, a)
-								{
-									return Object(v.jsx)("div",
-									{
-										children: Object(v.jsx)(jt,
-										{
+							var t = (
+								e.props &&
+								e.props.info &&
+								e.props.info.metadata &&
+								Array.isArray(e.props.info.metadata.materials)
+							) ? e.props.info.metadata.materials : [];
+						
+							if (t.length === 0) {
+								return Object(v.jsx)("div", {
+									children: "No materials found for this item."
+								});
+							}
+						
+							return Object(v.jsx)("div", {
+								children: t.map(function (t, a) {
+									return Object(v.jsx)("div", {
+										children: Object(v.jsx)(jt, {
 											label: t.label,
-											children: Object(v.jsx)("div",
-											{
+											children: Object(v.jsx)("div", {
 												className: "textures-container",
-												children: t.types.map((function (a, l)
-												{
-													return Object(v.jsxs)("div",
-													{
+												children: t.types.map(function (a, l) {
+													return Object(v.jsxs)("div", {
 														className: "texture-item",
-														onClick: function ()
-														{
+														onClick: function () {
 															var l = t.name_in_model,
 																n = a;
-															e.handleMaterialChange(l, n)
+															e.handleMaterialChange(l, n);
 														},
-														children: [Object(v.jsx)("img",
-														{
-															alt: a.label,
-															src: a.texture,
-															className: "thumbnail"
-														}), Object(v.jsx)("div",
-														{
-															className: "label",
-															children: a.label
-														})]
-													}, l)
-												}))
+														children: [
+															Object(v.jsx)("img", {
+																alt: a.label,
+																src: a.texture,
+																className: "thumbnail"
+															}),
+															Object(v.jsx)("div", {
+																className: "label",
+																children: a.label
+															})
+														]
+													}, l);
+												})
 											})
 										})
-									}, a)
-								}))
-							})
+									}, a);
+								})
+							});
 						}, e.renderStyleSection = function ()
 						{
-							var t = e.props.info.metadata.styles;
-							if (Array.isArray(t)) return Object(v.jsx)("div",
-							{
-								style:
-								{
-									paddingTop: 10
-								},
-								children: t.map((function (t, a)
-								{
-									return Object(v.jsx)("div",
-									{
-										children: Object(v.jsx)(jt,
-										{
+							var t = (
+								e.props &&
+								e.props.info &&
+								e.props.info.metadata &&
+								Array.isArray(e.props.info.metadata.styles)
+							) ? e.props.info.metadata.styles : [];
+						
+							if (t.length === 0) {
+								return Object(v.jsx)("div", {
+									style: { paddingTop: 10 },
+									children: "No style options available."
+								});
+							}
+						
+							return Object(v.jsx)("div", {
+								style: { paddingTop: 10 },
+								children: t.map(function (t, a) {
+									return Object(v.jsx)("div", {
+										children: Object(v.jsx)(jt, {
 											label: t.label,
-											children: Object(v.jsx)("div",
-											{
+											children: Object(v.jsx)("div", {
 												className: "styles-container",
-												children: t.types.map((function (a, l)
-												{
-													return Object(v.jsxs)("div",
-													{
+												children: t.types.map(function (a, l) {
+													return Object(v.jsxs)("div", {
 														className: "style-item",
-														onClick: function ()
-														{
+														onClick: function () {
 															var l = t.name_in_model,
 																n = a.name_in_model;
-															e.handleStyleChange(l, n)
+															e.handleStyleChange(l, n);
 														},
-														children: [a.thumbnail && Object(v.jsx)("img",
-														{
-															alt: a.label,
-															src: a.thumbnail,
-															className: "thumbnail"
-														}), Object(v.jsx)("div",
-														{
-															className: "label",
-															children: a.label
-														})]
-													}, l)
-												}))
+														children: [
+															a.thumbnail && Object(v.jsx)("img", {
+																alt: a.label,
+																src: a.thumbnail,
+																className: "thumbnail"
+															}),
+															Object(v.jsx)("div", {
+																className: "label",
+																children: a.label
+															})
+														]
+													}, l);
+												})
 											})
 										})
-									}, a)
-								}))
-							})
+									}, a);
+								})
+							});
 						}, e
 					}
 					return Object(g.a)(a, [
@@ -29342,7 +29552,12 @@
 												},
 												onMorphAlignChanged: function (t)
 												{
-													l.setMorphAlign(t), e.forceUpdate()
+													if (l && typeof l.setMorphAlign === "function") {
+														l.setMorphAlign(t);
+														e.forceUpdate();
+													} else {
+														console.warn("⚠️ setMorphAlign is not a function on this object:", l);
+													}
 												},
 												onLockChanged: function (t)
 												{
@@ -29401,3 +29616,42 @@
 		[57, 1, 2]
 	]
 ]);
+let dragControls;
+let selectedObject = null;
+
+function setupDragControls(scene, camera, renderer, orbitControls, getMode) {
+	const selectable = [];
+
+	scene.traverse(function (child) {
+		if (child.isMesh && child.userData.selectable) {
+			selectable.push(child);
+		}
+	});
+
+	if (dragControls) dragControls.dispose();
+
+	dragControls = new THREE.DragControls(selectable, camera, renderer.domElement);
+
+	dragControls.addEventListener("dragstart", function (event) {
+		if (getMode() === "MOVE") {
+			orbitControls.enabled = false;
+			selectedObject = event.object;
+		}
+	});
+
+	dragControls.addEventListener("dragend", function () {
+		orbitControls.enabled = true;
+		selectedObject = null;
+	});
+
+	dragControls.addEventListener("hoveron", function () {
+		if (getMode() === "MOVE") {
+			document.body.style.cursor = "grab";
+		}
+	});
+
+	dragControls.addEventListener("hoveroff", function () {
+		document.body.style.cursor = "default";
+	});
+}
+
