@@ -7807,44 +7807,69 @@
 						value: function ()
 						{
 							var e = this.getButtons();
-							return Object(v.jsxs)("div",
-							{
-								className: "left-toolbar",
-								children: [e.map((function (e, t)
-								{
-									return e ? Object(v.jsx)("div",
-									{
-										className: "left-toolbar-button ".concat(e.toggled ? "toggled" : ""),
-										"data-tip": e.tooltip,
-										onClick: function ()
+							return Object(v.jsxs)("div", {
+							  className: "left-toolbar",
+							  children: [
+								// ✅ Logo + Title
+								Object(v.jsxs)("div", {
+								  className: "logo-title",
+								  children: [
+									Object(v.jsx)("img", {
+									  src: "/Sportstech.png", // Update with your actual path
+									  alt: "Logo",
+									  className: "logo"
+									}),
+									Object(v.jsx)("div", {
+									  className: "title",
+									  children: "SPORTSTECH"
+									})
+								  ]
+								}),
+						  
+								// ✅ Toolbar Buttons
+								e.map(function (e, t) {
+								  return e
+									? Object(v.jsx)(
+										"div",
 										{
-											"function" === typeof e.callback && e.callback()
-										},
-										children: Object(v.jsx)("span",
-										{
+										  className: "left-toolbar-button ".concat(e.toggled ? "toggled" : ""),
+										  "data-tip": e.tooltip,
+										  onClick: function () {
+											"function" === typeof e.callback && e.callback();
+										  },
+										  children: Object(v.jsx)("span", {
 											className: e.font,
 											style: e.fontStyle,
 											children: e.label
-										})
-									}, t) : Object(v.jsx)("div",
-									{
-										className: "hr"
-									}, t)
-								})), Object(v.jsx)(Ft.a,
-								{
-									position: "bottom-center",
-									autoClose: 3e3,
-									hideProgressBar: !1,
-									newestOnTop: !1,
-									closeOnClick: !0,
-									rtl: !1,
-									pauseOnFocusLoss: !0,
-									draggable: !0,
-									pauseOnHover: !0
-								}), Object(v.jsx)(Pt.a,
-								{})]
-							})
-						}
+										  })
+										},
+										t
+									  )
+									: Object(v.jsx)(
+										"div",
+										{
+										  className: "hr"
+										},
+										t
+									  );
+								}),
+						  
+								// ✅ Toast + Context Tooltips
+								Object(v.jsx)(Ft.a, {
+								  position: "bottom-center",
+								  autoClose: 3000,
+								  hideProgressBar: false,
+								  newestOnTop: false,
+								  closeOnClick: true,
+								  rtl: false,
+								  pauseOnFocusLoss: true,
+								  draggable: true,
+								  pauseOnHover: true
+								}),
+								Object(v.jsx)(Pt.a, {})
+							  ]
+							});
+						  }						  
 					}]), a
 				}(r.a.Component),
 				It = function (e)
